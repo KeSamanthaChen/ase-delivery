@@ -1,0 +1,164 @@
+#https://github.com/compose-spec/compose-spec/blob/master/spec.md
+version: "3.7"
+services:
+  ase-delivery-discovery-server-service:
+    container_name: ase-delivery-discovery-server-service
+    build:
+      dockerfile: Dockerfile
+      context: ./ase-delivery-discovery-server
+    #    networks:
+    #      - gateway
+    image: ase-delivery-discovery-server-service:latest
+    restart: on-failure
+    expose:
+      - "8761"
+#    depends_on:
+#      - mongo
+#    environment:
+#      SPRING_DATA_MONGODB_HOST: mongo
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+
+#healthcheck:
+#  test: ["CMD", "curl", "-f", "http://localhost"]
+#  interval: 1m30s
+#  timeout: 10s
+#  retries: 3
+#  start_period: 40s
+
+  ase-delivery-cas-service:
+    container_name: ase-delivery-cas-service
+    build:
+      dockerfile: Dockerfile
+      context: ./ase-delivery-cas
+    #    networks:
+    #      - gateway
+    image: ase-delivery-cas-service:latest
+    restart: on-failure
+    expose:
+      - "9091"
+    depends_on:
+      - mongo
+      - ase-delivery-discovery-server-service
+    links:
+      - ase-delivery-discovery-server-service
+    environment:
+      SPRING_DATA_MONGODB_HOST: mongo
+    ports:
+      - "9091:9091"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9091" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+#  ase-delivery-dse-service:
+#    container_name: ase-delivery-dse-service
+#    build:
+#      dockerfile: Dockerfile
+#      context: ./ase-delivery-dse
+#    #    networks:
+#    #      - gateway
+#    image: ase-delivery-dse-service:latest
+#    restart: on-failure
+#    expose:
+#      - "8080"
+#    depends_on:
+#      - mongo
+#      - ase-delivery-cas-service
+#      - ase-delivery-discovery-server-service
+#    links:
+#      - ase-delivery-cas-service
+#      - ase-delivery-discovery-server-service
+#    environment:
+#      SPRING_DATA_MONGODB_HOST: mongo
+#    ports:
+#      - "8080:8080"
+#    healthcheck:
+#      test: [ "CMD", "curl", "-f", "http://localhost:8080" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+
+#  ase-delivery-gateway-service:
+#    container_name: ase-delivery-gateway-service
+#    build:
+#      dockerfile: Dockerfile
+#      context: ./ase-delivery-gateway
+#    #    networks:
+#    #      - gateway
+#    image: ase-delivery-gateway-service:latest
+#    restart: on-failure
+#    expose:
+#      - "10789"
+#    depends_on:
+##      - mongo
+##      - ase-delivery-cas-service
+#      - ase-delivery-discovery-server-service
+#    links:
+#      - ase-delivery-discovery-server-service
+##    environment:
+##      SPRING_DATA_MONGODB_HOST: mongo
+#    ports:
+#      - "10789:10789"
+#    healthcheck:
+#      test: [ "CMD", "curl", "-f", "http://localhost:10789" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+
+
+#  ase-delivery-spa-service:
+#    container_name: ase-delivery-spa-service
+#    build:
+#      dockerfile: Dockerfile
+#      context: ./ase-delivery-spa
+#    #    networks:
+#    #      - gateway
+#    image: ase-delivery-spa-service:latest
+#    restart: on-failure
+#    depends_on:
+#      - ase-delivery-gateway-service
+#    ports:
+#      - "3000:3000"
+#    links:
+#      - "ase-delivery-gateway-service"
+##    environment:
+##      - BACKEND_URL=http://backend-service:8080
+
+
+  #may still have authentication problem
+  mongo:
+    container_name: mongo
+    image: mongo:latest
+    command: [--auth]
+    restart: always
+    #    networks:
+    #      - gateway
+    expose:
+      - "27017"
+    ports:
+      - "27017:27017"
+    #    volumes:
+    #      - mongodbdata:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: aseAdmin
+      MONGO_INITDB_ROOT_PASSWORD: test
+
+#volumes:
+#  mongodbdata:
+##
+#networks:
+#  default:
+#    external:
+#      name: mongonet
+
+#networks:
+#  gateway:
+#    driver: "bridge"
