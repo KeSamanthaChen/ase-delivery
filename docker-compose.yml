@@ -58,79 +58,81 @@ services:
       timeout: 10s
       retries: 3
 
-#  ase-delivery-dse-service:
-#    container_name: ase-delivery-dse-service
-#    build:
-#      dockerfile: Dockerfile
-#      context: ./ase-delivery-dse
-#    #    networks:
-#    #      - gateway
-#    image: ase-delivery-dse-service:latest
-#    restart: on-failure
-#    expose:
-#      - "8080"
-#    depends_on:
-#      - mongo
-#      - ase-delivery-cas-service
-#      - ase-delivery-discovery-server-service
-#    links:
-#      - ase-delivery-cas-service
-#      - ase-delivery-discovery-server-service
-#    environment:
-#      SPRING_DATA_MONGODB_HOST: mongo
-#    ports:
-#      - "8080:8080"
-#    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://localhost:8080" ]
-#      interval: 30s
-#      timeout: 10s
-#      retries: 3
 
-#  ase-delivery-gateway-service:
-#    container_name: ase-delivery-gateway-service
-#    build:
-#      dockerfile: Dockerfile
-#      context: ./ase-delivery-gateway
-#    #    networks:
-#    #      - gateway
-#    image: ase-delivery-gateway-service:latest
-#    restart: on-failure
-#    expose:
-#      - "10789"
-#    depends_on:
-##      - mongo
-##      - ase-delivery-cas-service
-#      - ase-delivery-discovery-server-service
-#    links:
-#      - ase-delivery-discovery-server-service
-##    environment:
-##      SPRING_DATA_MONGODB_HOST: mongo
-#    ports:
-#      - "10789:10789"
-#    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://localhost:10789" ]
-#      interval: 30s
-#      timeout: 10s
-#      retries: 3
+  ase-delivery-dse-service:
+    container_name: ase-delivery-dse-service
+    build:
+      dockerfile: Dockerfile
+      context: ./ase-delivery-dse
+    #    networks:
+    #      - gateway
+    image: ase-delivery-dse-service:latest
+    restart: on-failure
+    expose:
+      - "8080"
+    depends_on:
+      - mongo
+      - ase-delivery-cas-service
+      - ase-delivery-discovery-server-service
+    links:
+      - ase-delivery-cas-service
+      - ase-delivery-discovery-server-service
+    environment:
+      SPRING_DATA_MONGODB_HOST: mongo
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 
-#  ase-delivery-spa-service:
-#    container_name: ase-delivery-spa-service
-#    build:
-#      dockerfile: Dockerfile
-#      context: ./ase-delivery-spa
-#    #    networks:
-#    #      - gateway
-#    image: ase-delivery-spa-service:latest
-#    restart: on-failure
-#    depends_on:
-#      - ase-delivery-gateway-service
-#    ports:
-#      - "3000:3000"
-#    links:
-#      - "ase-delivery-gateway-service"
-##    environment:
-##      - BACKEND_URL=http://backend-service:8080
+  ase-delivery-gateway-service:
+    container_name: ase-delivery-gateway-service
+    build:
+      dockerfile: Dockerfile
+      context: ./ase-delivery-gateway
+    #    networks:
+    #      - gateway
+    image: ase-delivery-gateway-service:latest
+    restart: on-failure
+    expose:
+      - "10789"
+    depends_on:
+  #      - mongo
+  #      - ase-delivery-cas-service
+      - ase-delivery-discovery-server-service
+    links:
+      - ase-delivery-discovery-server-service
+  #    environment:
+  #      SPRING_DATA_MONGODB_HOST: mongo
+    ports:
+      - "10789:10789"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:10789" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+
+  ase-delivery-spa-service:
+    container_name: ase-delivery-spa-service
+    build:
+      dockerfile: Dockerfile
+      context: ./ase-delivery-spa
+    #    networks:
+    #      - gateway
+    image: ase-delivery-spa-service:latest
+    restart: on-failure
+    depends_on:
+      - ase-delivery-gateway-service
+    ports:
+      - "3000:3000"
+    links:
+      - "ase-delivery-gateway-service"
+  #    environment:
+  #      - BACKEND_URL=http://backend-service:8080
 
 
   #may still have authentication problem
