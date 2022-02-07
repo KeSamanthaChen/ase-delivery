@@ -40,6 +40,7 @@ spa-service:build:
   script:
     - cd ase-delivery-spa/
     # - npm install --global yarn
+    - yarn upgrade
     - yarn install
     # - npm install react-scripts
     - npm install -g serve
