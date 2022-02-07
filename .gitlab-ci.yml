@@ -111,17 +111,17 @@ cas-service:test:
     changes:
       - ase-delivery-cas/**/*
 
-dse-service:test:
-  stage: test
-  script: cd ase-delivery-dse/ && mvn test
-  services:
-    - mongo:latest
-  variables:
-    MONGO_INITDB_ROOT_USERNAME: aseAdmin
-    MONGO_INITDB_ROOT_PASSWORD: test
-  only:
-    changes:
-      - ase-delivery-dse/**/*
+# dse-service:test:
+#   stage: test
+#   script: cd ase-delivery-dse/ && mvn test
+#   services:
+#     - mongo:latest
+#   variables:
+#     MONGO_INITDB_ROOT_USERNAME: aseAdmin
+#     MONGO_INITDB_ROOT_PASSWORD: test
+#   only:
+#     changes:
+#       - ase-delivery-dse/**/*
 
 gateway-service:test:
   stage: test
