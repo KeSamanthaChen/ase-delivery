@@ -39,7 +39,7 @@ spa-service:build:
   image: node:alpine
   script:
     - cd ase-delivery-spa/
-    - npm install --global yarn
+    # - npm install --global yarn
     - yarn install --production
     # - npm install react-scripts
     - npm install -g serve
