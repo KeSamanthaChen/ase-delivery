@@ -1,10 +1,6 @@
 image: maven:3.8.4-openjdk-11
 
 variables:
-  DISCOVERY_SERVER_SERVICE_IMAGE_NAME: discovery-server-service
-  CAS_SERVICE_IMAGE_NAME: cas-service
-  DSE_SERVICE_IMAGE_NAME: dse-service
-  GATEWAY_SERVICE_IMAGE_NAME: gateway-service
   SPA_SERVICE_IMAGE_NAME: spa-service
 
   #MAVEN_OPTS:
