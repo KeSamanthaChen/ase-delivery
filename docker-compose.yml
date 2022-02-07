@@ -110,6 +110,8 @@ services:
 
     image: ase-delivery-spa-service:latest
     restart: on-failure
+    expose:
+      - "3000"
     depends_on:
       - ase-delivery-gateway-service
     ports:
@@ -140,7 +142,7 @@ services:
 
 
   mongo:
-    # container_name: mongo
+    container_name: mongo
     image: mongo:latest
     command: [--auth]
     restart: always
