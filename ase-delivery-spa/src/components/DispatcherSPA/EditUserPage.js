@@ -45,6 +45,7 @@ export default function EditUserPage(props) {
                 </Col>
                 <Col span={15}>
                     <Input
+                    disabled
                     value={username}
                     defaultValue={props.defaultData.name}
                     prefix={<UserOutlined className="site-form-item-icon" />}

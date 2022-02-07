@@ -49,7 +49,16 @@ class DispatcherSPA extends React.Component {
     }
 
     onRefreshClicked() {
-        switch (this.props.currentTab) {
+        this.refresh(this.props.currentTab);
+    }
+
+
+    componentDidMount() {
+        this.refresh();
+    }
+
+    refresh(tab) {
+        switch (tab) {
             case 'delivery':
                 this.props.getDeliveries();
                 break;
@@ -62,19 +71,11 @@ class DispatcherSPA extends React.Component {
                 this.props.getBoxes();
                 break;
             default:
+                this.props.getUsers();
+                this.props.getDeliveries();
+                this.props.getBoxes();
                 break;
         }
-    }
-
-
-    componentDidMount() {
-        this.refresh();
-    }
-
-    refresh() {
-        this.props.getUsers();
-        this.props.getDeliveries();
-        this.props.getBoxes();
     }
 
     /**
@@ -86,7 +87,7 @@ class DispatcherSPA extends React.Component {
 
     handleOk = () => {
         this.setState({ modalAction: null });
-        this.refresh();
+        this.refresh(this.props.currentTab);
     };
 
     handleCancel = (actionType, modalType) => {
@@ -139,7 +140,7 @@ class DispatcherSPA extends React.Component {
                     <Space size="middle">
                         <Button onClick={() => {
                             this.showModal('edit', record);
-                        }}>Edit {record.username}</Button>
+                        }}>Edit</Button>
                         <Button danger onClick={() => {
                             this.props.deleteUser(record, this.props.currentTab);
                         }}>Delete</Button>
@@ -235,7 +236,7 @@ class DispatcherSPA extends React.Component {
                     <Space size="middle">
                         <Button onClick={() => {
                             this.showModal('edit', record);
-                        }}>Edit {record.id}</Button>
+                        }}>Edit</Button>
                         <Button danger onClick={() => {
                             this.props.deleteBox(record.id);
                         }}>Delete</Button>
@@ -318,7 +319,7 @@ class DispatcherSPA extends React.Component {
                     }}
                 >
                     <div className="logo" />
-                    <Menu mode="inline" defaultSelectedKeys={['4']} style={{marginTop: 64}}>
+                    <Menu mode="inline" defaultSelectedKeys={[this.props.currentTab]} style={{marginTop: 64}}>
                         {menuList}
                     </Menu>
                 </Sider>
