@@ -1,5 +1,7 @@
 package edu.tum.dse.deliveryservice.config;
 
+import com.netflix.discovery.DiscoveryClient;
+import com.netflix.discovery.EurekaClient;
 import edu.tum.dse.deliveryservice.interceptor.RestTemplateCookieInterceptor;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
@@ -31,4 +33,5 @@ public class RestTemplateConfig {
     public RestTemplateCookieInterceptor restTemplateCookieInterceptor() {
         return new RestTemplateCookieInterceptor();
     }
+
 }

@@ -28,6 +28,11 @@ ARG deployDir=/app
 
 ENV API_URL=http://localhost:10789/api
 # ENV BACKEND_URL=http://backend-service:8080
+# ARG REACT_APP_API_BASE_URL=http://127.0.0.1:10789
+
+# # RUN echo "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAThis is the echo: $APP_BASE_URL"
+
+# ENV REACT_APP_API_BASE_URL=$REACT_APP_API_BASE_URL
 
 RUN mkdir -p $deployDir
 

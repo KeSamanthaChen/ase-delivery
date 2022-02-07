@@ -1,5 +1,10 @@
 package edu.tum.dse.deliveryservice;
 
+import com.netflix.appinfo.InstanceInfo;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
+import com.netflix.discovery.EurekaClient;
+import com.netflix.discovery.shared.transport.TransportException;
 import edu.tum.dse.deliveryservice.client.AuthClient;
 import edu.tum.dse.deliveryservice.jwt.KeyManager;
 import edu.tum.dse.deliveryservice.model.*;
@@ -15,6 +20,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 @SpringBootApplication
 @EnableEurekaClient
@@ -38,15 +45,32 @@ public class DeliveryServiceApplication implements CommandLineRunner {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private DiscoveryClient discoveryClient;
+
 
     public static void main(String[] args) {
         SpringApplication.run(DeliveryServiceApplication.class, args);
     }
 
     @Override
-    public void run(String... args) {
-        byte[] publicKeyEncoded = this.authClient.getPublicKey();
-        this.keyManager.setPublicKey(publicKeyEncoded);
+    public void run(String... args) throws InterruptedException {
+
+        boolean publicKeyReceived = false;
+        // Recovery mechanism if due to race condition the auth service is not registered
+        while (!publicKeyReceived) {
+
+            List<ServiceInstance> instances = this.discoveryClient.getInstances("authentication-service");
+            if (!instances.isEmpty()) {
+                byte[] publicKeyEncoded = this.authClient.getPublicKey();
+                this.keyManager.setPublicKey(publicKeyEncoded);
+                publicKeyReceived = true;
+                System.out.println("Received public key from AUTHENTICATION-SERVICE!");
+            } else {
+                System.out.println("Waiting for public key from AUTHENTICATION-SERVICE...");
+                Thread.sleep(5000);
+            }
+        }
 
 //       Account dispatcher = new Account(UserRole.DISPATCHER, "dispatcher@dispatcher.com");
 //       Account deliverer = new Account(UserRole.DELIVERER, "deliverer@dispatcher.com");

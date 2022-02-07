@@ -24,7 +24,7 @@ spring:
         - Path=/api/auth/**
 eureka:
   instance:
-    hostname: ase-delivery-discovery-server-service
+    hostname: localhost
   client:
     register-with-eureka: true
     fetch-registry: true

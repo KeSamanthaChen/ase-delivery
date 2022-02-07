@@ -18,11 +18,6 @@ services:
 #      SPRING_DATA_MONGODB_HOST: mongo
     ports:
       - "8761:8761"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8761"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
 
 #healthcheck:
@@ -52,11 +47,6 @@ services:
       SPRING_DATA_MONGODB_HOST: mongo
     ports:
       - "9091:9091"
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9091" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
 
   ase-delivery-dse-service:
@@ -81,11 +71,6 @@ services:
       SPRING_DATA_MONGODB_HOST: mongo
     ports:
       - "8080:8080"
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
 
   ase-delivery-gateway-service:
@@ -109,11 +94,6 @@ services:
   #      SPRING_DATA_MONGODB_HOST: mongo
     ports:
       - "10789:10789"
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:10789" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
 
   ase-delivery-spa-service:
@@ -121,8 +101,13 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./ase-delivery-spa
+      # args:
+        # REACT_APP_API_BASE_URL: http://ase-delivery-gateway-service:10789/api
     #    networks:
     #      - gateway
+    # environment:
+      # - REACT_APP_API_BASE_URL=http://ase-delivery-gateway-service:10789/api
+
     image: ase-delivery-spa-service:latest
     restart: on-failure
     depends_on:
@@ -132,19 +117,38 @@ services:
     links:
       - "ase-delivery-gateway-service"
   #    environment:
-  #      - BACKEND_URL=http://backend-service:8080
+  #      - BACKEND_URL=http://ase-delivery-gateway-service:10789
 
 
   #may still have authentication problem
+  # mongo_cas:
+  #   container_name: mongo_cas
+  #   image: mongo:latest
+  #   command: [--auth]
+  #   restart: always
+  #   #    networks:
+  #   #      - gateway
+  #   expose:
+  #     - "27018"
+  #   ports:
+  #     - "27018:27017"
+  #   #    volumes:
+  #   #      - mongodbdata:/data/db
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: aseAdmin
+  #     MONGO_INITDB_ROOT_PASSWORD: test
+
+
   mongo:
-    container_name: mongo
+    # container_name: mongo
     image: mongo:latest
     command: [--auth]
     restart: always
     #    networks:
     #      - gateway
-    expose:
-      - "27017"
+    # expose:
+    #   - "27017"
+    #   - "27018"
     ports:
       - "27017:27017"
     #    volumes:
