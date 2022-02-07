@@ -1,0 +1,356 @@
+image: maven:3.8.4-openjdk-11
+
+variables:
+  DISCOVERY_SERVER_SERVICE_IMAGE_NAME: discovery-server-service
+  CAS_SERVICE_IMAGE_NAME: cas-service
+  DSE_SERVICE_IMAGE_NAME: dse-service
+  GATEWAY_SERVICE_IMAGE_NAME: gateway-service
+  SPA_SERVICE_IMAGE_NAME: spa-service
+
+  #MAVEN_OPTS:
+  #MAVEN_CLI_OPTS:
+
+#Cache downloaded dependencies and plugins between builds
+#To keep cache across branches add 'key: $CI_JOB_NAME'
+cache:
+  paths:
+    - ase-delivery-spa/build
+    - ase-delivery-spa/node_modules
+    - ase-delivery-cas/target/*.jar
+    - ase-delivery-dse/target/*.jar
+    - ase-delivery-discovery-server/target/*.jar
+    - ase-delivery-gateway/target/*.jar
+
+
+before_script:
+  - cd $CI_PROJECT_DIR
+
+after_script:
+  - cd $CI_PROJECT_DIR
+
+# List of stages for jobs, and their order of execution
+stages:          
+  - build
+  - test
+  - package
+  - publish
+  - deploy
+
+
+# This job runs in the build stage, which runs first.
+spa-service:build:
+  stage: build
+  image: node:alpine
+  script:
+    - cd ase-delivery-spa/
+    - npm install --global yarn
+    - yarn install --production
+    # - npm install react-scripts
+    - npm install -g serve
+  artifacts:
+    paths:
+      - ase-delivery-spa/build
+      - ase-delivery-spa/node_modules/
+  only:
+    changes:
+      - ase-delivery-spa/**/*
+
+discovery-server-service:build:
+  stage: build
+  script: cd ase-delivery-discovery-server/ && mvn clean compile
+  only:
+    changes:
+      - ase-delivery-discovery-server/**/*
+
+cas-service:build:
+  stage: build
+  script: cd ase-delivery-cas/ && mvn clean compile
+  only:
+    changes:
+      - ase-delivery-cas/**/*
+
+dse-service:build:
+  stage: build
+  script: cd ase-delivery-dse/ && mvn clean compile
+  only:
+    changes:
+      - ase-delivery-dse/**/*
+
+gateway-service:build:
+  stage: build
+  script: cd ase-delivery-gateway/ && mvn clean compile
+  only:
+    changes:
+      - ase-delivery-gateway/**/*
+
+
+# test
+# spa-service:test:
+#   stage: test
+#   image: node:alpine
+#   script:
+#     - cd ase-delivery-spa/
+#     - echo "spa test" #this part...
+#   only:
+#     changes:
+#       - ase-delivery-spa/**/*
+
+discovery-server-service:test:
+  stage: test
+  script: cd ase-delivery-discovery-server/ && mvn test
+  only:
+    changes:
+      - ase-delivery-discovery-server/**/*
+
+cas-service:test:
+  stage: test
+  script: cd ase-delivery-cas/ && mvn test
+  # may need to change there
+  services:
+    - mongo:latest
+  variables:
+    MONGO_INITDB_ROOT_USERNAME: aseAdmin
+    MONGO_INITDB_ROOT_PASSWORD: test
+  only:
+    changes:
+      - ase-delivery-cas/**/*
+
+dse-service:test:
+  stage: test
+  script: cd ase-delivery-dse/ && mvn test
+  services:
+    - mongo:latest
+  variables:
+    MONGO_INITDB_ROOT_USERNAME: aseAdmin
+    MONGO_INITDB_ROOT_PASSWORD: test
+  only:
+    changes:
+      - ase-delivery-dse/**/*
+
+gateway-service:test:
+  stage: test
+  script: cd ase-delivery-gateway/ && mvn test
+  only:
+    changes:
+      - ase-delivery-gateway/**/*
+
+
+# package jobs
+spa-service:package:
+  stage: package
+  image: node:alpine
+  script: cd ase-delivery-spa/ && yarn build
+  artifacts:
+    # not very sure
+    paths:
+      - ase-delivery-spa/build
+  only:
+      changes:
+        - ase-delivery-spa/**/*
+
+discovery-server-service:package:
+  stage: package
+  script: cd ase-delivery-discovery-server/ && mvn package -DskipTests=true
+  artifacts:
+    paths:
+      - ase-delivery-discovery-server/target/*.jar
+  only: 
+    changes:
+      - ase-delivery-discovery-server/**/*
+
+cas-service:package:
+  stage: package
+  script: cd ase-delivery-cas/ && mvn package -DskipTests=true
+  artifacts:
+    paths:
+      - ase-delivery-cas/target/*.jar
+  only: 
+    changes:
+      - ase-delivery-cas/**/*
+
+dse-service:package:
+  stage: package
+  script: cd ase-delivery-dse/ && mvn package -DskipTests=true
+  artifacts:
+    paths:
+      - ase-delivery-dse/target/*.jar
+  only: 
+    changes:
+      - ase-delivery-dse/**/*
+
+gateway-service:package:
+  stage: package
+  script: cd ase-delivery-gateway/ && mvn package -DskipTests=true
+  artifacts:
+    paths:
+      - ase-delivery-gateway/target/*.jar
+  only: 
+    changes:
+      - ase-delivery-gateway/**/*
+
+
+# publish jobs
+spa-service:publish:
+  stage: publish
+  image: docker:19.03.12
+  # services:
+  #   - docker:19.03.12-dind
+  script:
+    - cd ase-delivery-spa/
+    - echo "CI registry" $CI_REGISTRY
+    # log in to GitLab's container registry
+    - docker login -u $CI_REGISTRY_USER -p $CI_PASSWORD $CI_REGISTRY
+    # pull first for improved cacheing
+    # -docker pull $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME || true
+    # build and tag new image
+    - docker build -t $SPA_SERVICE_IMAGE_NAME:latest .
+    - docker image tag $SPA_SERVICE_IMAGE_NAME $CI_REGISTRY/$CI_PROJECT_LOCATION:$SPA_SERVICE_IMAGE_NAME
+    # publish to container registry
+    - docker push $CI_REGISTRY/$CI_PROJECT_LOCATION:$SPA_SERVICE_IMAGE_NAME
+    - echo "CI REGISTRY IMAGE" $CI_REGISTRY/$CI_PROJECT_LOCATION:$SPA_SERVICE_IMAGE_NAME
+  # variables:
+  #   DOCKER_DRIVER: overlay2
+  #   DOCKER_HOST: tcp://docker:2375
+  only:
+    changes:
+      - ase-delivery-spa/**/*
+
+discovery-server-service:publish:
+  stage: publish
+  image: docker:19.03.12
+  # services:
+  #   - docker:19.03.12-dind
+  script:
+    - cd ase-delivery-discovery-server/
+    - echo "CI registry" $CI_REGISTRY
+    # log in to GitLab's container registry
+    - docker login -u $CI_REGISTRY_USER -p $CI_PASSWORD $CI_REGISTRY
+    # pull first for improved cacheing
+    # -docker pull $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME || true
+    # build and tag new image
+    - docker build -t $IMAGE_NAME:latest .
+    - docker image tag $IMAGE_NAME $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
+    # publish to container registry
+    - docker push $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
+    - echo "CI REGISTRY IMAGE" $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
+  variables:
+    IMAGE_NAME: discovery-server-service
+  #   DOCKER_DRIVER: overlay2
+  #   DOCKER_HOST: tcp://docker:2375
+  only:
+    changes:
+      - ase-delivery-discovery-server/**/*
+
+cas-service:publish:
+  stage: publish
+  image: docker:19.03.12
+  # services:
+  #   - docker:19.03.12-dind
+  script:
+    - cd ase-delivery-cas/
+    - echo "CI registry" $CI_REGISTRY
+    # log in to GitLab's container registry
+    - docker login -u $CI_REGISTRY_USER -p $CI_PASSWORD $CI_REGISTRY
+    # pull first for improved cacheing
+    # -docker pull $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME || true
+    # build and tag new image
+    - docker build -t $IMAGE_NAME:latest .
+    - docker image tag $IMAGE_NAME $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
+    # publish to container registry
+    - docker push $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
+    - echo "CI REGISTRY IMAGE" $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
+  variables:
+    IMAGE_NAME: cas-service
+  #   DOCKER_DRIVER: overlay2
+  #   DOCKER_HOST: tcp://docker:2375
+  only:
+    changes:
+      - ase-delivery-cas/**/*
+
+dse-service:publish:
+  stage: publish
+  image: docker:19.03.12
+  # services:
+  #   - docker:19.03.12-dind
+  script:
+    - cd ase-delivery-dse/
+    - echo "CI registry" $CI_REGISTRY
+    # log in to GitLab's container registry
+    - docker login -u $CI_REGISTRY_USER -p $CI_PASSWORD $CI_REGISTRY
+    # pull first for improved cacheing
+    # -docker pull $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME || true
+    # build and tag new image
+    - docker build -t $IMAGE_NAME:latest .
+    - docker image tag $IMAGE_NAME $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
+    # publish to container registry
+    - docker push $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
+    - echo "CI REGISTRY IMAGE" $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
+  variables:
+    IMAGE_NAME: dse-service
+  #   DOCKER_DRIVER: overlay2
+  #   DOCKER_HOST: tcp://docker:2375
+  only:
+    changes:
+      - ase-delivery-dse/**/*
+
+gateway-service:publish:
+  stage: publish
+  image: docker:19.03.12
+  # services:
+  #   - docker:19.03.12-dind
+  script:
+    - cd ase-delivery-gateway/
+    - echo "CI registry" $CI_REGISTRY
+    # log in to GitLab's container registry
+    - docker login -u $CI_REGISTRY_USER -p $CI_PASSWORD $CI_REGISTRY
+    # pull first for improved cacheing
+    # -docker pull $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME || true
+    # build and tag new image
+    - docker build -t $IMAGE_NAME:latest .
+    - docker image tag $IMAGE_NAME $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
+    # publish to container registry
+    - docker push $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
+    - echo "CI REGISTRY IMAGE" $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
+  variables:
+    IMAGE_NAME: gateway-service
+  #   DOCKER_DRIVER: overlay2
+  #   DOCKER_HOST: tcp://docker:2375
+  only:
+    changes:
+      - ase-delivery-gateway/**/*
+
+
+# #Deploy
+# deploy:aws:
+#   stage: deploy
+#   image: ubuntu:20.04
+#   script:
+#     - echo "start building docker compose in AWS"
+#     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+#     - mkdir ~/.ssh && touch ~/.ssh/config
+#     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+#     - eval $(ssh-agent -s)
+
+#     # create the SSH directory and give it the right permissions
+#     - mkdir -p ~/.ssh
+#     - chmod 700 ~/.ssh
+
+#     # configure the docker socket in the cloud VM to be readable, writeable, and executable
+#     # - sudo chmod 666 /var/run/docker.sock
+
+#     # add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
+#     # we're using tr to fix line endings which makes ed25519 keys work without extra base64 encoding
+#     - cat $AWS_PEM_KEY | tr -d '\r' | ssh-add -
+#     - echo "AWS Host " $AWS_USER_HOST
+
+#     - scp -r $DOCKER_COMPOSE_FILE $AWS_USER_HOST:~/
+#     - ssh $AWS_USER_HOST "sudo docker login -u $CI_REGISTRY_USER -p $CI_PASSWORD $CI_REGISTRY"
+#     # - ssh $AWS_USER_HOST "docker pull $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME || true"
+#     - ssh $AWS_USER_HOST "sudo docker-compose -f $DOCKER_COMPOSE_FILE pull && sudo docker-compose -f $DOCKER_COMPOSE_FILE up --force-recreate -d"
+
+#   variables:
+#     DOCKER_COMPOSE_FILE: docker-compose.prod.yml
+#     # DOCKER_DRIVER: overlay2
+#     # DOCKER_HOST: tcp://docker:2375
+
+
