@@ -36,11 +36,11 @@ stages:
 # This job runs in the build stage, which runs first.
 spa-service:build:
   stage: build
-  image: node:alpine
+  image: node:14-alpine
   script:
     - cd ase-delivery-spa/
-    # - npm install --global yarn
-    - yarn upgrade
+    - npm install --global yarn
+    # - yarn upgrade
     - yarn install
     # - npm install react-scripts
     - npm install -g serve
@@ -124,7 +124,7 @@ spa-service:build:
 # package jobs
 spa-service:package:
   stage: package
-  image: node:alpine
+  image: node:14-alpine
   script: cd ase-delivery-spa/ && yarn build
   artifacts:
     # not very sure

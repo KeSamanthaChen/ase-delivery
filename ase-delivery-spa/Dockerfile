@@ -22,7 +22,7 @@
 # CMD ["npm", "start"]
 
 
-FROM node:alpine
+FROM node:14-alpine
 
 ARG deployDir=/app
 
