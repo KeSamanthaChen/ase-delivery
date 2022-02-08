@@ -32,7 +32,8 @@ export default function EditUserPage(props) {
                                 rfidToken,
                                 role: role.charAt(0).toUpperCase() + role.slice(1),
                             },
-                            role,
+                            oldRole: props.activeTabName,
+                            newRole: role,
                         })
                     );
                 }
