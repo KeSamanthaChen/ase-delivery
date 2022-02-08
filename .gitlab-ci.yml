@@ -81,44 +81,44 @@ gateway-service:build:
       - ase-delivery-gateway/**/*
 
 
-# discovery-server-service:test:
-#   stage: test
-#   script: cd ase-delivery-discovery-server/ && mvn test
-#   only:
-#     changes:
-#       - ase-delivery-discovery-server/**/*
+discovery-server-service:test:
+  stage: test
+  script: cd ase-delivery-discovery-server/ && mvn test
+  only:
+    changes:
+      - ase-delivery-discovery-server/**/*
 
-# cas-service:test:
-#   stage: test
-#   script: cd ase-delivery-cas/ && mvn test
-#   # may need to change there
-#   services:
-#     - mongo:latest
-#   variables:
-#     MONGO_INITDB_ROOT_USERNAME: aseAdmin
-#     MONGO_INITDB_ROOT_PASSWORD: test
-#   only:
-#     changes:
-#       - ase-delivery-cas/**/*
+cas-service:test:
+  stage: test
+  script: cd ase-delivery-cas/ && mvn test
+  # may need to change there
+  services:
+    - mongo:latest
+  variables:
+    MONGO_INITDB_ROOT_USERNAME: aseAdmin
+    MONGO_INITDB_ROOT_PASSWORD: test
+  only:
+    changes:
+      - ase-delivery-cas/**/*
 
-# dse-service:test:
-#   stage: test
-#   script: cd ase-delivery-dse/ && mvn test
-#   services:
-#     - mongo:latest
-#   variables:
-#     MONGO_INITDB_ROOT_USERNAME: aseAdmin
-#     MONGO_INITDB_ROOT_PASSWORD: test
-#   only:
-#     changes:
-#       - ase-delivery-dse/**/*
+dse-service:test:
+  stage: test
+  script: cd ase-delivery-dse/ && mvn test
+  services:
+    - mongo:latest
+  variables:
+    MONGO_INITDB_ROOT_USERNAME: aseAdmin
+    MONGO_INITDB_ROOT_PASSWORD: test
+  only:
+    changes:
+      - ase-delivery-dse/**/*
 
-# gateway-service:test:
-#   stage: test
-#   script: cd ase-delivery-gateway/ && mvn test
-#   only:
-#     changes:
-#       - ase-delivery-gateway/**/*
+gateway-service:test:
+  stage: test
+  script: cd ase-delivery-gateway/ && mvn test
+  only:
+    changes:
+      - ase-delivery-gateway/**/*
 
 
 # package jobs

@@ -2,6 +2,7 @@ package edu.tum.dse.deliveryservice;
 
 import com.netflix.appinfo.InstanceInfo;
 import edu.tum.dse.deliveryservice.exceptions.BoxNotAvailableException;
+import edu.tum.dse.deliveryservice.jwt.PublicKeyCrawler;
 import edu.tum.dse.deliveryservice.repository.DeliveryRepository;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -21,6 +22,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -50,30 +52,17 @@ public class DeliveryServiceApplication implements CommandLineRunner {
     @Autowired
     private DiscoveryClient discoveryClient;
 
+    @Autowired
+    private TaskExecutor taskExecutor;
+
 
     public static void main(String[] args) {
         SpringApplication.run(DeliveryServiceApplication.class, args);
     }
 
     @Override
-    public void run(String... args) throws InterruptedException {
-
-        boolean publicKeyReceived = false;
-        // Recovery mechanism if due to race condition the auth service is not registered
-        while (!publicKeyReceived) {
-
-            List<ServiceInstance> instances = this.discoveryClient.getInstances("authentication-service");
-            if (!instances.isEmpty()) {
-                byte[] publicKeyEncoded = this.authClient.getPublicKey();
-                this.keyManager.setPublicKey(publicKeyEncoded);
-                publicKeyReceived = true;
-                System.out.println("Received public key from AUTHENTICATION-SERVICE!");
-            } else {
-                System.out.println("Waiting for public key from AUTHENTICATION-SERVICE...");
-                Thread.sleep(5000);
-            }
-        }
-
+    public void run(String... args) {
+        taskExecutor.execute(new PublicKeyCrawler(keyManager, discoveryClient, authClient));
         // some dummy values to fill the database
         if (this.accountRepository.findAll().isEmpty()) {
             Account dispatcher = new Account(UserRole.DISPATCHER, "dispatcher@dispatcher.com");

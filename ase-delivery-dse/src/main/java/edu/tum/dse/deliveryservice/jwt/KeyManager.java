@@ -21,12 +21,11 @@ public class KeyManager {
 
     private PublicKey publicKey;
 
-    public PublicKey getPublicKey() {
+    public synchronized PublicKey getPublicKey() {
         return this.publicKey;
     }
 
     public void setPublicKey(byte[] publicKeyEncoded) {
-
             try {
                 KeyFactory keyFactory = KeyFactory.getInstance("RSA");
                 EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKeyEncoded);
