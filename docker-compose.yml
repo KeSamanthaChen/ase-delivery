@@ -1,28 +1,21 @@
 #https://github.com/compose-spec/compose-spec/blob/master/spec.md
 version: "3.7"
 services:
-#   ase-delivery-discovery-server-service:
-#     container_name: ase-delivery-discovery-server-service
-#     #    networks:
-#     #      - gateway
-#     image: gitlab.lrz.de:5005/ase-21-22/team-8/ase-delivery:discovery-server-service
-#     restart: on-failure
-#     expose:
-#       - "8761"
-# #    depends_on:
-# #      - mongo
-# #    environment:
-# #      SPRING_DATA_MONGODB_HOST: mongo
-#     ports:
-#       - "8761:8761"
+  ase-delivery-discovery-server-service:
+    container_name: ase-delivery-discovery-server-service
+    #    networks:
+    #      - gateway
+    image: gitlab.lrz.de:5005/ase-21-22/team-8/ase-delivery:discovery-server-service
+    restart: on-failure
+    expose:
+      - "8761"
+#    depends_on:
+#      - mongo
+#    environment:
+#      SPRING_DATA_MONGODB_HOST: mongo
+    ports:
+      - "8761:8761"
 
-
-# #healthcheck:
-# #  test: ["CMD", "curl", "-f", "http://localhost"]
-# #  interval: 1m30s
-# #  timeout: 10s
-# #  retries: 3
-# #  start_period: 40s
 
 #   ase-delivery-cas-service:
 #     container_name: ase-delivery-cas-service

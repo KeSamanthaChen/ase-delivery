@@ -1,6 +1,7 @@
 #reference example 1 from: https://github.com/spring-guides/gs-spring-boot-docker
 #base image
-FROM openjdk:11-jdk-oracle
+# FROM openjdk:11-jdk-oracle
+FROM openjdk:11-jre-slim
 ARG JAR_FILE=target/*.jar
 #copy into the image
 COPY ${JAR_FILE} app.jar
