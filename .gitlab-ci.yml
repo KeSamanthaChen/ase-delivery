@@ -73,12 +73,12 @@ dse-service:build:
     changes:
       - ase-delivery-dse/**/*
 
-# gateway-service:build:
-#   stage: build
-#   script: cd ase-delivery-gateway/ && mvn clean compile
-#   only:
-#     changes:
-#       - ase-delivery-gateway/**/*
+gateway-service:build:
+  stage: build
+  script: cd ase-delivery-gateway/ && mvn clean compile
+  only:
+    changes:
+      - ase-delivery-gateway/**/*
 
 
 # discovery-server-service:test:
@@ -164,15 +164,15 @@ dse-service:package:
     changes:
       - ase-delivery-dse/**/*
 
-# gateway-service:package:
-#   stage: package
-#   script: cd ase-delivery-gateway/ && mvn package -DskipTests=true
-#   artifacts:
-#     paths:
-#       - ase-delivery-gateway/target/*.jar
-#   only: 
-#     changes:
-#       - ase-delivery-gateway/**/*
+gateway-service:package:
+  stage: package
+  script: cd ase-delivery-gateway/ && mvn package -DskipTests=true
+  artifacts:
+    paths:
+      - ase-delivery-gateway/target/*.jar
+  only: 
+    changes:
+      - ase-delivery-gateway/**/*
 
 
 # publish jobs
@@ -279,31 +279,31 @@ dse-service:publish:
     changes:
       - ase-delivery-dse/**/*
 
-# gateway-service:publish:
-#   stage: publish
-#   image: docker:19.03.12
-#   # services:
-#   #   - docker:19.03.12-dind
-#   script:
-#     - cd ase-delivery-gateway/
-#     - echo "CI registry" $CI_REGISTRY
-#     # log in to GitLab's container registry
-#     - docker login -u $CI_REGISTRY_USER -p $CI_PASSWORD $CI_REGISTRY
-#     # pull first for improved cacheing
-#     # -docker pull $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME || true
-#     # build and tag new image
-#     - docker build -t $IMAGE_NAME:latest .
-#     - docker image tag $IMAGE_NAME $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
-#     # publish to container registry
-#     - docker push $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
-#     - echo "CI REGISTRY IMAGE" $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
-#   variables:
-#     IMAGE_NAME: gateway-service
-#   #   DOCKER_DRIVER: overlay2
-#   #   DOCKER_HOST: tcp://docker:2375
-#   only:
-#     changes:
-#       - ase-delivery-gateway/**/*
+gateway-service:publish:
+  stage: publish
+  image: docker:19.03.12
+  # services:
+  #   - docker:19.03.12-dind
+  script:
+    - cd ase-delivery-gateway/
+    - echo "CI registry" $CI_REGISTRY
+    # log in to GitLab's container registry
+    - docker login -u $CI_REGISTRY_USER -p $CI_PASSWORD $CI_REGISTRY
+    # pull first for improved cacheing
+    # -docker pull $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME || true
+    # build and tag new image
+    - docker build -t $IMAGE_NAME:latest .
+    - docker image tag $IMAGE_NAME $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
+    # publish to container registry
+    - docker push $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
+    - echo "CI REGISTRY IMAGE" $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
+  variables:
+    IMAGE_NAME: gateway-service
+  #   DOCKER_DRIVER: overlay2
+  #   DOCKER_HOST: tcp://docker:2375
+  only:
+    changes:
+      - ase-delivery-gateway/**/*
 
 
 #Deploy
