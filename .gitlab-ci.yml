@@ -306,37 +306,37 @@ gateway-service:publish:
       - ase-delivery-gateway/**/*
 
 
-# #Deploy
-# deploy:aws:
-#   stage: deploy
-#   image: ubuntu:20.04
-#   script:
-#     - echo "start building docker compose in AWS"
-#     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
-#     - mkdir ~/.ssh && touch ~/.ssh/config
-#     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-#     - eval $(ssh-agent -s)
+#Deploy
+deploy:aws:
+  stage: deploy
+  image: ubuntu:20.04
+  script:
+    - echo "start building docker compose in AWS"
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - mkdir ~/.ssh && touch ~/.ssh/config
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - eval $(ssh-agent -s)
 
-#     # create the SSH directory and give it the right permissions
-#     - mkdir -p ~/.ssh
-#     - chmod 700 ~/.ssh
+    # create the SSH directory and give it the right permissions
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
 
-#     # configure the docker socket in the cloud VM to be readable, writeable, and executable
-#     # - sudo chmod 666 /var/run/docker.sock
+    # configure the docker socket in the cloud VM to be readable, writeable, and executable
+    # - sudo chmod 666 /var/run/docker.sock
 
-#     # add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
-#     # we're using tr to fix line endings which makes ed25519 keys work without extra base64 encoding
-#     - cat $AWS_PEM_KEY | tr -d '\r' | ssh-add -
-#     - echo "AWS Host " $AWS_USER_HOST
+    # add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
+    # we're using tr to fix line endings which makes ed25519 keys work without extra base64 encoding
+    - cat $AWS_PEM_KEY | tr -d '\r' | ssh-add -
+    - echo "AWS Host " $AWS_USER_HOST
 
-#     - scp -r $DOCKER_COMPOSE_FILE $AWS_USER_HOST:~/
-#     - ssh $AWS_USER_HOST "sudo docker login -u $CI_REGISTRY_USER -p $CI_PASSWORD $CI_REGISTRY"
-#     # - ssh $AWS_USER_HOST "docker pull $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME || true"
-#     - ssh $AWS_USER_HOST "sudo docker-compose -f $DOCKER_COMPOSE_FILE pull && sudo docker-compose -f $DOCKER_COMPOSE_FILE up --force-recreate -d"
+    - scp -r $DOCKER_COMPOSE_FILE $AWS_USER_HOST:~/
+    - ssh $AWS_USER_HOST "sudo docker login -u $CI_REGISTRY_USER -p $CI_PASSWORD $CI_REGISTRY"
+    # - ssh $AWS_USER_HOST "docker pull $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME || true"
+    - ssh $AWS_USER_HOST "sudo docker-compose -f $DOCKER_COMPOSE_FILE pull && sudo docker-compose -f $DOCKER_COMPOSE_FILE up --force-recreate -d"
 
-#   variables:
-#     DOCKER_COMPOSE_FILE: docker-compose.yml
-#     # DOCKER_DRIVER: overlay2
-#     # DOCKER_HOST: tcp://docker:2375
+  variables:
+    DOCKER_COMPOSE_FILE: docker-compose.yml
+    # DOCKER_DRIVER: overlay2
+    # DOCKER_HOST: tcp://docker:2375
 
 
