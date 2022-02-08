@@ -23,6 +23,8 @@ public class Account {
     private String username;
     private String email;
 
+    @Indexed(unique = true)
+    @NonNull
     private String rfidToken;
 
     public Account() {

@@ -58,13 +58,6 @@ public class UserController {
         this.userService.deleteUser(username);
     }
 
-    // Temporary methods for creating a new user without signup request, can be deleted later
-
-    @PostMapping("/users/createUser")
-    public Account createUserWithoutSignupRequest(@RequestBody Account user) {
-        return this.userService.createUserWithoutSignupRequest(user);
-    }
-
     @GetMapping("/users/{id}/deliveries")
     @PreAuthorize(("hasAuthority('" + UserRole.DISPATCHER + "') or @authorizationService.isIdFromUser(#id, authentication.principal.username)"))
     public List<Delivery> getUserDeliveries(@PathVariable String id) {

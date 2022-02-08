@@ -9,7 +9,7 @@ spring:
       globalcors:
         corsConfigurations:
           '[/api/**]':
-            allowedOrigins: "http://localhost:3000"
+            allowedOrigins: ${CORS:http://localhost:3000}
             allowedMethods: "*"
             allowedHeaders: "*"
             allowCredentials: true
@@ -24,7 +24,7 @@ spring:
         - Path=/api/auth/**
 eureka:
   instance:
-    hostname: ase-delivery-discovery-server-service
+    hostname: ${EUREKA_SERVER:ase-delivery-discovery-server-service}
   client:
     register-with-eureka: true
     fetch-registry: true

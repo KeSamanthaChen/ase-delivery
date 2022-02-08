@@ -38,4 +38,5 @@ eureka:
     service-url:
       defaultZone: ${EUREKA_SERVER:http://ase-delivery-discovery-server-service:8761/eureka}
 
-
+webconfig:
+  cors: ${CORS:http://localhost:3000}

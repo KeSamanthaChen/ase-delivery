@@ -8,7 +8,7 @@ services:
       context: ./ase-delivery-discovery-server
     #    networks:
     #      - gateway
-    image: gitlab.lrz.de:5005/ase-21-22/team-8/ase-delivery:discovery-server-service
+    image: ase-delivery-discovery-server-service:latest
     restart: on-failure
     expose:
       - "8761"
@@ -34,7 +34,7 @@ services:
       context: ./ase-delivery-cas
     #    networks:
     #      - gateway
-    image: gitlab.lrz.de:5005/ase-21-22/team-8/ase-delivery:cas-service
+    image: ase-delivery-cas-service:latest
     restart: on-failure
     expose:
       - "9091"
@@ -45,7 +45,6 @@ services:
       - ase-delivery-discovery-server-service
     environment:
       SPRING_DATA_MONGODB_HOST: mongo
-      CORS: http://ec2-3-120-178-127.eu-central-1.compute.amazonaws.com:3000
     ports:
       - "9091:9091"
 
@@ -57,7 +56,7 @@ services:
       context: ./ase-delivery-dse
     #    networks:
     #      - gateway
-    image: gitlab.lrz.de:5005/ase-21-22/team-8/ase-delivery:dse-service
+    image: ase-delivery-dse-service:latest
     restart: on-failure
     expose:
       - "8080"
@@ -70,7 +69,6 @@ services:
       - ase-delivery-discovery-server-service
     environment:
       SPRING_DATA_MONGODB_HOST: mongo
-      CORS: http://ec2-3-120-178-127.eu-central-1.compute.amazonaws.com:3000
     ports:
       - "8080:8080"
 
@@ -82,7 +80,7 @@ services:
       context: ./ase-delivery-gateway
     #    networks:
     #      - gateway
-    image: gitlab.lrz.de:5005/ase-21-22/team-8/ase-delivery:gateway-service
+    image: ase-delivery-gateway-service:latest
     restart: on-failure
     expose:
       - "10789"
@@ -92,8 +90,8 @@ services:
       - ase-delivery-discovery-server-service
     links:
       - ase-delivery-discovery-server-service
-    environment:
-      CORS: http://ec2-3-120-178-127.eu-central-1.compute.amazonaws.com:3000
+  #    environment:
+  #      SPRING_DATA_MONGODB_HOST: mongo
     ports:
       - "10789:10789"
 
@@ -110,7 +108,7 @@ services:
     # environment:
       # - REACT_APP_API_BASE_URL=http://ase-delivery-gateway-service:10789/api
 
-    image: gitlab.lrz.de:5005/ase-21-22/team-8/ase-delivery:spa-service
+    image: ase-delivery-spa-service:latest
     restart: on-failure
     expose:
       - "3000"
