@@ -2,6 +2,7 @@
 #base image
 # FROM openjdk:11-jdk-oracle
 FROM openjdk:11-jre-slim
+# just to trigger the pipeline
 ARG JAR_FILE=target/*.jar
 #copy into the image
 COPY ${JAR_FILE} app.jar
