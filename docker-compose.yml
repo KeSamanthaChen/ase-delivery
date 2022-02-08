@@ -98,12 +98,12 @@ services:
     restart: on-failure
     expose:
       - "3000"
-    depends_on:
-      - ase-delivery-gateway-service
+    # depends_on:
+    #   - ase-delivery-gateway-service
     ports:
       - "3000:3000"
-    links:
-      - "ase-delivery-gateway-service"
+    # links:
+    #   - "ase-delivery-gateway-service"
   #    environment:
   #      - BACKEND_URL=http://ase-delivery-gateway-service:10789
 
