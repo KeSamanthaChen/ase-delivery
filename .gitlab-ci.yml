@@ -59,12 +59,12 @@ discovery-server-service:build:
     changes:
       - ase-delivery-discovery-server/**/*
 
-# cas-service:build:
-#   stage: build
-#   script: cd ase-delivery-cas/ && mvn clean compile
-#   only:
-#     changes:
-#       - ase-delivery-cas/**/*
+cas-service:build:
+  stage: build
+  script: cd ase-delivery-cas/ && mvn clean compile
+  only:
+    changes:
+      - ase-delivery-cas/**/*
 
 # dse-service:build:
 #   stage: build
@@ -144,15 +144,15 @@ discovery-server-service:package:
     changes:
       - ase-delivery-discovery-server/**/*
 
-# cas-service:package:
-#   stage: package
-#   script: cd ase-delivery-cas/ && mvn package -DskipTests=true
-#   artifacts:
-#     paths:
-#       - ase-delivery-cas/target/*.jar
-#   only: 
-#     changes:
-#       - ase-delivery-cas/**/*
+cas-service:package:
+  stage: package
+  script: cd ase-delivery-cas/ && mvn package -DskipTests=true
+  artifacts:
+    paths:
+      - ase-delivery-cas/target/*.jar
+  only: 
+    changes:
+      - ase-delivery-cas/**/*
 
 # dse-service:package:
 #   stage: package
@@ -227,31 +227,31 @@ discovery-server-service:publish:
     changes:
       - ase-delivery-discovery-server/**/*
 
-# cas-service:publish:
-#   stage: publish
-#   image: docker:19.03.12
-#   # services:
-#   #   - docker:19.03.12-dind
-#   script:
-#     - cd ase-delivery-cas/
-#     - echo "CI registry" $CI_REGISTRY
-#     # log in to GitLab's container registry
-#     - docker login -u $CI_REGISTRY_USER -p $CI_PASSWORD $CI_REGISTRY
-#     # pull first for improved cacheing
-#     # -docker pull $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME || true
-#     # build and tag new image
-#     - docker build -t $IMAGE_NAME:latest .
-#     - docker image tag $IMAGE_NAME $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
-#     # publish to container registry
-#     - docker push $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
-#     - echo "CI REGISTRY IMAGE" $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
-#   variables:
-#     IMAGE_NAME: cas-service
-#   #   DOCKER_DRIVER: overlay2
-#   #   DOCKER_HOST: tcp://docker:2375
-#   only:
-#     changes:
-#       - ase-delivery-cas/**/*
+cas-service:publish:
+  stage: publish
+  image: docker:19.03.12
+  # services:
+  #   - docker:19.03.12-dind
+  script:
+    - cd ase-delivery-cas/
+    - echo "CI registry" $CI_REGISTRY
+    # log in to GitLab's container registry
+    - docker login -u $CI_REGISTRY_USER -p $CI_PASSWORD $CI_REGISTRY
+    # pull first for improved cacheing
+    # -docker pull $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME || true
+    # build and tag new image
+    - docker build -t $IMAGE_NAME:latest .
+    - docker image tag $IMAGE_NAME $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
+    # publish to container registry
+    - docker push $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
+    - echo "CI REGISTRY IMAGE" $CI_REGISTRY/$CI_PROJECT_LOCATION:$IMAGE_NAME
+  variables:
+    IMAGE_NAME: cas-service
+  #   DOCKER_DRIVER: overlay2
+  #   DOCKER_HOST: tcp://docker:2375
+  only:
+    changes:
+      - ase-delivery-cas/**/*
 
 # dse-service:publish:
 #   stage: publish

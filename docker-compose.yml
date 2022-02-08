@@ -17,24 +17,24 @@ services:
       - "8761:8761"
 
 
-#   ase-delivery-cas-service:
-#     container_name: ase-delivery-cas-service
-#     #    networks:
-#     #      - gateway
-#     image: gitlab.lrz.de:5005/ase-21-22/team-8/ase-delivery:cas-service
-#     restart: on-failure
-#     expose:
-#       - "9091"
-#     depends_on:
-#       - mongo
-#       - ase-delivery-discovery-server-service
-#     links:
-#       - ase-delivery-discovery-server-service
-#     environment:
-#       SPRING_DATA_MONGODB_HOST: mongo
-#       CORS: http://ec2-18-194-242-103.eu-central-1.compute.amazonaws.com:3000
-#     ports:
-#       - "9091:9091"
+  ase-delivery-cas-service:
+    container_name: ase-delivery-cas-service
+    #    networks:
+    #      - gateway
+    image: gitlab.lrz.de:5005/ase-21-22/team-8/ase-delivery:cas-service
+    restart: on-failure
+    expose:
+      - "9091"
+    depends_on:
+      - mongo
+      - ase-delivery-discovery-server-service
+    links:
+      - ase-delivery-discovery-server-service
+    environment:
+      SPRING_DATA_MONGODB_HOST: mongo
+      CORS: http://ec2-18-194-242-103.eu-central-1.compute.amazonaws.com:3000
+    ports:
+      - "9091:9091"
 
 
 #   ase-delivery-dse-service:
