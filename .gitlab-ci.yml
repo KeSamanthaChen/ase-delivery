@@ -33,24 +33,24 @@ stages:
   - deploy
 
 
-# # This job runs in the build stage, which runs first.
-# spa-service:build:
-#   stage: build
-#   image: node:14-alpine
-#   script:
-#     - cd ase-delivery-spa/
-#     # - npm install --global yarn
-#     # - yarn upgrade
-#     - yarn install
-#     # - npm install react-scripts
-#     - npm install -g serve
-#   artifacts:
-#     paths:
-#       - ase-delivery-spa/build/
-#       - ase-delivery-spa/node_modules/
-#   only:
-#     changes:
-#       - ase-delivery-spa/**/*
+# This job runs in the build stage, which runs first.
+spa-service:build:
+  stage: build
+  image: node:14-alpine
+  script:
+    - cd ase-delivery-spa/
+    # - npm install --global yarn
+    # - yarn upgrade
+    - yarn install
+    # - npm install react-scripts
+    - npm install -g serve
+  artifacts:
+    paths:
+      - ase-delivery-spa/build/
+      - ase-delivery-spa/node_modules/
+  only:
+    changes:
+      - ase-delivery-spa/**/*
 
 discovery-server-service:build:
   stage: build
