@@ -3,9 +3,6 @@ version: "3.7"
 services:
   ase-delivery-discovery-server-service:
     container_name: ase-delivery-discovery-server-service
-    build:
-      dockerfile: Dockerfile
-      context: ./ase-delivery-discovery-server
     #    networks:
     #      - gateway
     image: gitlab.lrz.de:5005/ase-21-22/team-8/ase-delivery:discovery-server-service
@@ -29,9 +26,6 @@ services:
 
   ase-delivery-cas-service:
     container_name: ase-delivery-cas-service
-    build:
-      dockerfile: Dockerfile
-      context: ./ase-delivery-cas
     #    networks:
     #      - gateway
     image: gitlab.lrz.de:5005/ase-21-22/team-8/ase-delivery:cas-service
@@ -52,9 +46,6 @@ services:
 
   ase-delivery-dse-service:
     container_name: ase-delivery-dse-service
-    build:
-      dockerfile: Dockerfile
-      context: ./ase-delivery-dse
     #    networks:
     #      - gateway
     image: gitlab.lrz.de:5005/ase-21-22/team-8/ase-delivery:dse-service
@@ -77,9 +68,6 @@ services:
 
   ase-delivery-gateway-service:
     container_name: ase-delivery-gateway-service
-    build:
-      dockerfile: Dockerfile
-      context: ./ase-delivery-gateway
     #    networks:
     #      - gateway
     image: gitlab.lrz.de:5005/ase-21-22/team-8/ase-delivery:gateway-service
@@ -100,16 +88,12 @@ services:
 
   ase-delivery-spa-service:
     container_name: ase-delivery-spa-service
-    build:
-      dockerfile: Dockerfile
-      context: ./ase-delivery-spa
       # args:
         # REACT_APP_API_BASE_URL: http://ase-delivery-gateway-service:10789/api
     #    networks:
     #      - gateway
     # environment:
       # - REACT_APP_API_BASE_URL=http://ase-delivery-gateway-service:10789/api
-
     image: gitlab.lrz.de:5005/ase-21-22/team-8/ase-delivery:spa-service
     restart: on-failure
     expose:
