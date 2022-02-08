@@ -37,6 +37,8 @@ stages:
 spa-service:build:
   stage: build
   image: node:14-alpine
+  only:
+    - main
   script:
     - cd ase-delivery-spa/
     # - npm install --global yarn
@@ -54,6 +56,8 @@ spa-service:build:
 
 discovery-server-service:build:
   stage: build
+  only:
+    - main
   script: cd ase-delivery-discovery-server/ && mvn clean compile
   only:
     changes:
@@ -61,6 +65,8 @@ discovery-server-service:build:
 
 cas-service:build:
   stage: build
+  only:
+    - main
   script: cd ase-delivery-cas/ && mvn clean compile
   only:
     changes:
@@ -68,6 +74,8 @@ cas-service:build:
 
 dse-service:build:
   stage: build
+  only:
+    - main
   script: cd ase-delivery-dse/ && mvn clean compile
   only:
     changes:
@@ -75,6 +83,8 @@ dse-service:build:
 
 gateway-service:build:
   stage: build
+  only:
+    - main
   script: cd ase-delivery-gateway/ && mvn clean compile
   only:
     changes:
@@ -83,6 +93,8 @@ gateway-service:build:
 
 discovery-server-service:test:
   stage: test
+  only:
+    - main
   script: cd ase-delivery-discovery-server/ && mvn test
   only:
     changes:
@@ -90,6 +102,8 @@ discovery-server-service:test:
 
 cas-service:test:
   stage: test
+  only:
+    - main
   script: cd ase-delivery-cas/ && mvn test
   # may need to change there
   services:
@@ -103,6 +117,8 @@ cas-service:test:
 
 dse-service:test:
   stage: test
+  only:
+    - main
   script: cd ase-delivery-dse/ && mvn test
   services:
     - mongo:latest
@@ -115,6 +131,8 @@ dse-service:test:
 
 gateway-service:test:
   stage: test
+  only:
+    - main
   script: cd ase-delivery-gateway/ && mvn test
   only:
     changes:
@@ -124,6 +142,8 @@ gateway-service:test:
 # package jobs
 spa-service:package:
   stage: package
+  only:
+    - main
   image: node:14-alpine
   script: cd ase-delivery-spa/ && yarn build
   artifacts:
@@ -136,6 +156,8 @@ spa-service:package:
 
 discovery-server-service:package:
   stage: package
+  only:
+    - main
   script: cd ase-delivery-discovery-server/ && mvn package -DskipTests=true
   artifacts:
     paths:
@@ -146,6 +168,8 @@ discovery-server-service:package:
 
 cas-service:package:
   stage: package
+  only:
+    - main
   script: cd ase-delivery-cas/ && mvn package -DskipTests=true
   artifacts:
     paths:
@@ -156,6 +180,8 @@ cas-service:package:
 
 dse-service:package:
   stage: package
+  only:
+    - main
   script: cd ase-delivery-dse/ && mvn package -DskipTests=true
   artifacts:
     paths:
@@ -166,6 +192,8 @@ dse-service:package:
 
 gateway-service:package:
   stage: package
+  only:
+    - main
   script: cd ase-delivery-gateway/ && mvn package -DskipTests=true
   artifacts:
     paths:
@@ -178,6 +206,8 @@ gateway-service:package:
 # publish jobs
 spa-service:publish:
   stage: publish
+  only:
+    - main
   image: docker:19.03.12
   # services:
   #   - docker:19.03.12-dind
@@ -203,6 +233,8 @@ spa-service:publish:
 
 discovery-server-service:publish:
   stage: publish
+  only:
+    - main
   image: docker:19.03.12
   # services:
   #   - docker:19.03.12-dind
@@ -229,6 +261,8 @@ discovery-server-service:publish:
 
 cas-service:publish:
   stage: publish
+  only:
+    - main
   image: docker:19.03.12
   # services:
   #   - docker:19.03.12-dind
@@ -255,6 +289,8 @@ cas-service:publish:
 
 dse-service:publish:
   stage: publish
+  only:
+    - main
   image: docker:19.03.12
   # services:
   #   - docker:19.03.12-dind
@@ -281,6 +317,8 @@ dse-service:publish:
 
 gateway-service:publish:
   stage: publish
+  only:
+    - main
   image: docker:19.03.12
   # services:
   #   - docker:19.03.12-dind
@@ -309,6 +347,8 @@ gateway-service:publish:
 #Deploy
 deploy:aws:
   stage: deploy
+  only:
+    - main
   image: ubuntu:20.04
   script:
     - echo "start building docker compose in AWS"
