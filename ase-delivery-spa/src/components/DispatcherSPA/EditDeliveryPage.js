@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Modal, Row, Col, Select, message, Spin, Space, Steps } from 'antd';
 import { LoadingOutlined, FormOutlined, ExportOutlined, DownSquareOutlined, CheckSquareOutlined } from '@ant-design/icons';
-// import { UserOutlined } from '@ant-design/icons';
 import { updateDelivery, addDelivery } from './deliverySlice';
 import { api_url, codes_status } from '../Common/utils';
 import axios from 'axios';
@@ -28,6 +27,9 @@ class EditDeliveryPage extends React.Component {
             curBox: this.props.defaultData.targetBox?.id,
             curStatus: this.props.defaultData.status,
             isEditMode: this.props.isEditMode,
+            isFixedDeliverer: this.props.isEditMode,
+            isFixedBox: this.props.defaultData.status >= 2, 
+            isFixedCustomer: this.props.defaultData.status >= 3,
             curBoxes: null,    // available box list of the curCustomer
         };
     }
@@ -102,19 +104,20 @@ class EditDeliveryPage extends React.Component {
     }
 
     onBoxChange(newBox) {
-        let box = this.state.boxes.filter(function(box) {
+        let box = this.state.boxes.filter(function (box) {
             return box.id === newBox;
         })[0];
         let newDeliverers = this.state.deliverers;
         if (box.state === "ASSIGNED") {
             let delivererName = box?.delivererName;
             if (delivererName) {
-                newDeliverers = this.state.deliverers.filter(function(deliverer) {
+                newDeliverers = this.state.deliverers.filter(function (deliverer) {
                     return deliverer.username === delivererName;
                 });
             }
         }
-        this.setState({ curBox: newBox, curDeliverers: newDeliverers, curDeliverer: newDeliverers[0].id });
+        let canChoose = !this.state.isEditMode || (this.state.isEditMode && box.state === "AVAILABLE");
+        this.setState({ curBox: newBox, curDeliverers: newDeliverers, curDeliverer: newDeliverers[0].id, isFixedDeliverer: !canChoose});
     }
 
     changeStatus(newValue) {
@@ -122,6 +125,10 @@ class EditDeliveryPage extends React.Component {
     }
 
     async onCreateConfirm() {
+        if (!(this.state.curCustomer && this.state.curDeliverer && this.state.curBox)) {
+            message.warn("Not all fields are filled");
+            return;
+        }
         let newDelivery = {
             customer: {
                 id: this.state.curCustomer,
@@ -138,6 +145,10 @@ class EditDeliveryPage extends React.Component {
     }
 
     async onUpdateConfirm() {
+        if (!(this.state.curCustomer && this.state.curDeliverer && this.state.curBox)) {
+            message.warn("Not all fields are filled");
+            return;
+        }
         let newStatuses = Object.assign([], this.state.statuses);
         if (this.state.curStatus < this.state.status) {
             newStatuses = newStatuses.slice(0, this.state.curStatus + 1);
@@ -228,6 +239,7 @@ class EditDeliveryPage extends React.Component {
                             <Col span={12}>
                                 <Select style={{ width: "100%" }}
                                     showSearch
+                                    disabled={this.state.isFixedCustomer}
                                     value={this.state.curCustomer}
                                     optionFilterProp="children"
                                     onChange={(value) => { this.onCustomerChange(value) }}
@@ -243,6 +255,7 @@ class EditDeliveryPage extends React.Component {
                             <Col span="12">
                                 <Select style={{ width: "100%" }}
                                     showSearch
+                                    disabled={this.state.isFixedBox}
                                     value={this.state.curBox}
                                     optionFilterProp="children"
                                     onChange={(value) => { this.onBoxChange(value) }}
@@ -258,8 +271,8 @@ class EditDeliveryPage extends React.Component {
                             <Col span="12">
                                 <Select style={{ width: "100%" }}
                                     showSearch
-                                    disabled={this.state.isEditMode}
-                                    value={this.state.isEditMode ? this.state.delivererUsername :this.state.curDeliverer}
+                                    disabled={this.state.isFixedDeliverer}
+                                    value={this.state.isEditMode ? this.state.delivererUsername : this.state.curDeliverer}
                                     optionFilterProp="children"
                                     onChange={(value) => { this.onDelivererChange(value) }}
                                     filterOption={(input, option) => option.chilren.toLowerCase().indexOf(input.toLowerCase()) >= 0}>

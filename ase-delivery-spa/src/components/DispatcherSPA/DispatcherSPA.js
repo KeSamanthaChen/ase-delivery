@@ -187,7 +187,7 @@ class DispatcherSPA extends React.Component {
                         }}>Edit</Button>
                         {/* only allow deletion for newly ordered deliveries */}
                         <Button danger disabled={record.status !== 0} onClick={() => {
-                            this.props.deleteDelivery(record.trackingCode, this.refreshDeliveries.bind(this));
+                            this.props.deleteDelivery(record.trackingCode, this.onRefreshClicked.bind(this));
                         }}>Delete</Button>
                     </Space>
                 ),

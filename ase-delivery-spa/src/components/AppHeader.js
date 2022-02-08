@@ -17,7 +17,7 @@ function AppHeader() {
         return (
             <div id="AppHeader" style={headerStyle}>
                 <span id="AppName">ASE Delivery</span>
-                <span id="user"> {`${userRole ? `${userRole}: ` : 'Guest'}${username ? username: ''}`} </span>
+                <span id="user"> {`${userRole && username ? `${username}` : 'Guest'}`} </span>
                 {userRole && 
                 <Button style={{marginTop: '15px', marginLeft: '10px'}}
                     onClick={() => {
