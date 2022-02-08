@@ -30,6 +30,7 @@ class EditDeliveryPage extends React.Component {
             isFixedDeliverer: this.props.isEditMode,
             isFixedBox: this.props.defaultData.status >= 2, 
             isFixedCustomer: this.props.defaultData.status >= 3,
+            curDelivererName: this.props.defaultData.deliverer.username,
             curBoxes: null,    // available box list of the curCustomer
         };
     }
@@ -65,7 +66,7 @@ class EditDeliveryPage extends React.Component {
                     withCredentials: true
                 });
             }).then(response => {
-                this.setState({ curDeliverer: response.data['id'] });
+                this.setState({ curDeliverer: response.data['id'], curDelivererName: response.data['username'] });
                 return axios({
                     method: 'GET',
                     url: `${api_url}/delivery/boxes`,
@@ -116,8 +117,11 @@ class EditDeliveryPage extends React.Component {
                 });
             }
         }
+        console.log(newDeliverers[0].username);
         let canChoose = !this.state.isEditMode || (this.state.isEditMode && box.state === "AVAILABLE");
-        this.setState({ curBox: newBox, curDeliverers: newDeliverers, curDeliverer: newDeliverers[0].id, isFixedDeliverer: !canChoose});
+
+        this.setState({ curBox: newBox, curDeliverers: newDeliverers, curDeliverer: newDeliverers[0].id, isFixedDeliverer: !canChoose, curDelivererName: newDeliverers[0].username});
+
     }
 
     changeStatus(newValue) {
@@ -188,12 +192,17 @@ class EditDeliveryPage extends React.Component {
 
         const antIcon = <LoadingOutlined style={{ fontSize: 30 }} spin />;
 
-        if (this.state.curDeliverers) {
-            for (let i in this.state.curDeliverers) {
-                let curDeliverer = this.state.curDeliverers[i];
-                delivererOptions.push(<Option key={curDeliverer['id']}>{curDeliverer['username']}</Option>);
-            }
+        if (this.state.isFixedDeliverer) {
+            delivererOptions.push(<Option key={this.state.curDeliverer}>{this.state.curDelivererName}</Option>);
+        } else {
+            if (this.state.curDeliverers) {
+                for (let i in this.state.curDeliverers) {
+                    let curDeliverer = this.state.curDeliverers[i];
+                    delivererOptions.push(<Option key={curDeliverer['id']}>{curDeliverer['username']}</Option>);
+                }
+            } 
         }
+
 
         for (let i in this.state.customers) {
             let curCustomer = this.state.customers[i];
@@ -272,7 +281,7 @@ class EditDeliveryPage extends React.Component {
                                 <Select style={{ width: "100%" }}
                                     showSearch
                                     disabled={this.state.isFixedDeliverer}
-                                    value={this.state.isEditMode ? this.state.delivererUsername : this.state.curDeliverer}
+                                    value={this.state.curDeliverer}
                                     optionFilterProp="children"
                                     onChange={(value) => { this.onDelivererChange(value) }}
                                     filterOption={(input, option) => option.chilren.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
