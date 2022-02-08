@@ -14,9 +14,9 @@ export const getUsers = createAsyncThunk('users/getUsers', async () => {
     };
 });
 
-export const updateUser = createAsyncThunk('users/updateUser', async ({user, role}) => {
+export const updateUser = createAsyncThunk('users/updateUser', async ({user, oldRole, newRole}) => {
     const updatedUser = (await api.put('/delivery/users', user)).data;
-    return { user: updatedUser, role };
+    return { user: updatedUser, oldRole, newRole };
 });
 
 export const addUser = createAsyncThunk('users/addUser', async ({user, role}) => {
@@ -60,10 +60,19 @@ const usersSlice = createSlice({
         },
         [updateUser.fulfilled]: (state, { payload }) => {
             state.updateUserLoading = false;
-            const userIndex = state[payload.role + 's'].findIndex(user => user.username === payload.user.username);
-            if (userIndex >= 0) {
-                state[payload.role + 's'][userIndex] = payload.user;
+            const {user, oldRole, newRole} = payload;
+            if (oldRole === newRole) {
+                const userIndex = state[oldRole + 's'].findIndex(u => u.username === user.username);
+                if (userIndex >= 0) {
+                    state[oldRole + 's'][userIndex] = user;
+                }
+            } else {
+                const userIndex = state[oldRole + 's'].findIndex(u => u.username === user.username);
+                state[oldRole + 's'].splice(userIndex, 1);
+                console.log(state[newRole + 's']);
+                state[newRole + 's'].push(user);
             }
+
         },
         [updateUser.rejected]: (state) => {
             state.updateUserLoading = false;
