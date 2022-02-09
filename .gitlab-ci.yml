@@ -107,7 +107,7 @@ cas-service:test:
   script: cd ase-delivery-cas/ && mvn test
   # may need to change there
   services:
-    - mongo:latest
+    - name: mongo:latest
       alias: mongo_cas
   variables:
     MONGO_INITDB_ROOT_USERNAME: aseAdmin
