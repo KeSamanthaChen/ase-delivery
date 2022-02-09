@@ -2,7 +2,7 @@ spring:
   data:
     mongodb:
 
-      host: mongo
+      host: mongo_cas
       port: 27017
       database: aseDelivery
 

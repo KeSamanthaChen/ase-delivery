@@ -65,34 +65,16 @@ public class DeliveryServiceApplication implements CommandLineRunner {
         taskExecutor.execute(new PublicKeyCrawler(keyManager, discoveryClient, authClient));
         // some dummy values to fill the database
         if (this.accountRepository.findAll().isEmpty()) {
-            Account dispatcher = new Account(UserRole.DISPATCHER, "dispatcher@dispatcher.com");
-            dispatcher.setRfidToken("123456");
-            Account deliverer = new Account(UserRole.DELIVERER, "deliverer@dispatcher.com");
-            dispatcher.setRfidToken("1234567");
-            Account customer = new Account(UserRole.CUSTOMER, "dispatcher@dispatcher.com");
-            customer.setRfidToken("1234568");
-
-            Box box = new Box("Box in Garching", "80333 Muenchen");
-            Box box2 = new Box("Box in Munich", "80809 Muenchen");
-
-            box2.setState(Box.BoxStateEnum.AVAILABLE);
-
-            Delivery delivery = new Delivery(customer, deliverer, box);
-            Delivery delivery2 = new Delivery(customer, deliverer, box);
-
-            box.setCustomerName(customer.getUsername());
-            box.setDelivererName(deliverer.getUsername());
-
+            Account dispatcher = new Account(UserRole.DISPATCHER, "dispatcher@mail.com");
+            dispatcher.setRfidToken("asjk23yxnas");
+            Account deliverer = new Account(UserRole.DELIVERER, "deliverer@mail.com");
+            dispatcher.setRfidToken("asjklaJE13K");
+            Account customer = new Account(UserRole.CUSTOMER, "customer@mail.com");
+            customer.setRfidToken("asdhghsdgsdj");
             if (this.accountRepository.findAll().size() == 0) {
                 this.accountRepository.save(dispatcher);
                 this.accountRepository.save(deliverer);
                 this.accountRepository.save(customer);
-
-                this.boxService.createBox(box);
-                this.boxService.createBox(box2);
-
-                this.deliveryRepository.save(delivery);
-                this.deliveryRepository.save(delivery2);
             }
         }
     }

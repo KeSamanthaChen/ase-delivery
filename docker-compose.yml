@@ -33,7 +33,7 @@ services:
     environment:
       SPRING_DATA_MONGODB_HOST: mongo_cas
       # CORS: http://ec2-3-70-186-30.eu-central-1.compute.amazonaws.com:3000
-      CORS: http://3.70.186.30:3000
+      CORS: http://3.70.198.200:3000
     ports:
       - "9091:9091"
 
@@ -55,31 +55,31 @@ services:
       - ase-delivery-discovery-server-service
     environment:
       SPRING_DATA_MONGODB_HOST: mongo
-      CORS: http://3.70.186.30:3000
+      CORS: http://3.70.198.200:3000
     ports:
       - "8080:8080"
 
   #second instance for demonstrating scaling 
-  ase-delivery-dse-service-2:
-    container_name: ase-delivery-dse-service-2
-    #    networks:
-    #      - gateway
-    image: gitlab.lrz.de:5005/ase-21-22/team-8/ase-delivery:dse-service
-    restart: on-failure
-    expose:
-      - "8081"
-    depends_on:
-      - mongo
-      - ase-delivery-cas-service
-      - ase-delivery-discovery-server-service
-    links:
-      - ase-delivery-cas-service
-      - ase-delivery-discovery-server-service
-    environment:
-      SPRING_DATA_MONGODB_HOST: mongo
-      CORS: http://3.70.186.30:3000
-    ports:
-      - "8081:8080"
+  # ase-delivery-dse-service-2:
+  #   container_name: ase-delivery-dse-service-2
+  #   #    networks:
+  #   #      - gateway
+  #   image: gitlab.lrz.de:5005/ase-21-22/team-8/ase-delivery:dse-service
+  #   restart: on-failure
+  #   expose:
+  #     - "8081"
+  #   depends_on:
+  #     - mongo
+  #     - ase-delivery-cas-service
+  #     - ase-delivery-discovery-server-service
+  #   links:
+  #     - ase-delivery-cas-service
+  #     - ase-delivery-discovery-server-service
+  #   environment:
+  #     SPRING_DATA_MONGODB_HOST: mongo
+  #     CORS: http://3.70.186.30:3000
+  #   ports:
+  #     - "8081:8080"
 
 
   ase-delivery-gateway-service:
@@ -98,7 +98,7 @@ services:
       - ase-delivery-discovery-server-service
     environment:
       # CORS: http://ec2-3-70-186-30.eu-central-1.compute.amazonaws.com:3000
-      CORS: http://3.70.186.30:3000
+      CORS: http://3.70.198.200:3000
     ports:
       - "10789:10789"
 
