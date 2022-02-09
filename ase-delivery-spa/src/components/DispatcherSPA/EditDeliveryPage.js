@@ -30,7 +30,7 @@ class EditDeliveryPage extends React.Component {
             isFixedDeliverer: this.props.isEditMode,
             isFixedBox: this.props.defaultData.status >= 2, 
             isFixedCustomer: this.props.defaultData.status >= 3,
-            curDelivererName: this.props.defaultData.deliverer.username,
+            curDelivererName: this.props.defaultData.deliverer?.username,
             curBoxes: null,    // available box list of the curCustomer
         };
     }
