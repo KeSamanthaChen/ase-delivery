@@ -31,7 +31,8 @@ services:
     links:
       - ase-delivery-discovery-server-service
     environment:
-      SPRING_DATA_MONGODB_HOST: mongo
+      SPRING_DATA_MONGODB_HOST: mongo_cas
+      SPRING_DATA_MONGODB_PORT: 27018
       # CORS: http://ec2-3-70-186-30.eu-central-1.compute.amazonaws.com:3000
       CORS: http://3.70.186.30:3000
     ports:
@@ -104,22 +105,22 @@ services:
 
 
   #may still have authentication problem
-  # mongo_cas:
-  #   container_name: mongo_cas
-  #   image: mongo:latest
-  #   command: [--auth]
-  #   restart: always
-  #   #    networks:
-  #   #      - gateway
-  #   expose:
-  #     - "27018"
-  #   ports:
-  #     - "27018:27017"
-  #   #    volumes:
-  #   #      - mongodbdata:/data/db
-  #   environment:
-  #     MONGO_INITDB_ROOT_USERNAME: aseAdmin
-  #     MONGO_INITDB_ROOT_PASSWORD: test
+  mongo_cas:
+    container_name: mongo_cas
+    image: mongo:latest
+    command: [--auth]
+    restart: always
+    #    networks:
+    #      - gateway
+    expose:
+      - "27018"
+    ports:
+      - "27018:27017"
+    #    volumes:
+    #      - mongodbdata:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: aseAdmin
+      MONGO_INITDB_ROOT_PASSWORD: test
 
 
   mongo:
