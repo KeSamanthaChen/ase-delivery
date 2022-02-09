@@ -4,9 +4,11 @@ import { Input, Modal, Row, Col } from 'antd';
 import { addBox } from './boxSlice';
 
 export default function AddNewBoxPage(props) {
+    const [name, setName] = useState('')
     const [address, setAddress] = useState('')
     const [id, setID] = useState('')
 
+    const onNameChanged = e => setName(e.target.value)
     const onAddressChanged = e => setAddress(e.target.value)
     const onIDChanged = e => setID(e.target.value)
 
@@ -15,10 +17,11 @@ export default function AddNewBoxPage(props) {
     return (
         <Modal title={"Create "+props.activeTabName} visible={props.visible}
         onOk={() => {
-            if (address && id) {
+            if (address && id && name) {
                 dispatch(
                     addBox({
                         id,
+                        name,
                         address,
                     })
                 );
@@ -27,6 +30,17 @@ export default function AddNewBoxPage(props) {
         }}
         onCancel={props.handleCancel}
         >
+            <Row gutter={8}>
+                <Col span={5}>
+                    <p>Name:</p>
+                </Col>
+                <Col span={15}>
+                    <Input
+                    value={name}
+                    onChange={onNameChanged}
+                    placeholder="Enter box name" />
+                </Col>
+            </Row>
             <Row gutter={8}>
                 <Col span={5}>
                     <p>Address:</p>
