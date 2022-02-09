@@ -26,13 +26,12 @@ services:
     expose:
       - "9091"
     depends_on:
-      - mongo
+      - mongo_cas
       - ase-delivery-discovery-server-service
     links:
       - ase-delivery-discovery-server-service
     environment:
       SPRING_DATA_MONGODB_HOST: mongo_cas
-      SPRING_DATA_MONGODB_PORT: 27018
       # CORS: http://ec2-3-70-186-30.eu-central-1.compute.amazonaws.com:3000
       CORS: http://3.70.186.30:3000
     ports:
