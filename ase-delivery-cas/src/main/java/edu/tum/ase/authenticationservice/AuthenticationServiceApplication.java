@@ -38,6 +38,7 @@ public class AuthenticationServiceApplication implements CommandLineRunner {
             userService.saveUser(dummyCustomer);
             userService.saveUser(dummyCustomer2);
         }
+        
 
         this.initSystemAccounts();
     }
