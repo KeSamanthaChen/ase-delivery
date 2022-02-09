@@ -99,14 +99,24 @@ public class BoxController {
                     }
                 }
             } else if (box.getState() == Box.BoxStateEnum.FILLED) {
-                box.setState(Box.BoxStateEnum.AVAILABLE);
+                int stillInDepositCount = 0;
                 boxService.updateBox(box);
                 for (Delivery delivery : deliveries) {
+                    if (delivery.getStatuses().size() == 0) {
+                        stillInDepositCount += 1;
+                    }
                     if (delivery.getStatuses().size() == 3) {
                         delivery.getStatuses().add(new DeliveryStatus(DeliveryStatus.DeliveryStatusEnum.COMPLETE));
                         deliveryService.updateDelivery(delivery);
                         this.emailService.sentDeliveriesCollected(customer, null);
                     }
+                }
+                if (stillInDepositCount == 0) {
+                    box.setState(Box.BoxStateEnum.AVAILABLE);
+                    box.setCustomerName(null);
+                    box.setDelivererName(null);
+                } else {
+                    box.setState(Box.BoxStateEnum.ASSIGNED);
                 }
             }
             return new ResponseEntity<>("box & deliveries updated", HttpStatus.OK);
