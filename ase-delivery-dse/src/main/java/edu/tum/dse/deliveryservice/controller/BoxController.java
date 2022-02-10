@@ -105,7 +105,7 @@ public class BoxController {
                     if (delivery.getStatuses().size() == 1) {
                         stillInDepositCount += 1;
                     }
-                    if (delivery.getStatuses().size() == 3) {
+                    if (delivery.getStatuses().size() == 2) {
                         delivery.getStatuses().add(new DeliveryStatus(DeliveryStatus.DeliveryStatusEnum.COMPLETE));
                         deliveryService.updateDelivery(delivery);
                         this.emailService.sentDeliveriesCollected(customer, null);
