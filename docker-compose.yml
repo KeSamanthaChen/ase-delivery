@@ -55,7 +55,7 @@ services:
       - ase-delivery-discovery-server-service
     environment:
       SPRING_DATA_MONGODB_HOST: mongo
-      CORS: http:/3.71.93.212:3000
+      CORS: http://3.71.93.212:3000
     ports:
       - "8080:8080"
 
