@@ -73,6 +73,9 @@ class DelivererSPA extends React.Component {
             method: 'PUT',
             withCredentials: true,
             url: `${api_url}/delivery/deliveries/${this.state.activeDelivery['tracking_code']}/delivering`,
+            headers: {
+                'X-XSRF-TOKEN': getXSRFToken(),
+            }
         }).then(response => {
             if (response.status === 200) {
                 this.setState({
