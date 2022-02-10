@@ -33,7 +33,7 @@ services:
     environment:
       SPRING_DATA_MONGODB_HOST: mongo_cas
       # CORS: http://ec2-3-70-186-30.eu-central-1.compute.amazonaws.com:3000
-      CORS: http://3.70.198.200:3000
+      CORS: http://3.71.93.212:3000
     ports:
       - "9091:9091"
 
@@ -55,7 +55,7 @@ services:
       - ase-delivery-discovery-server-service
     environment:
       SPRING_DATA_MONGODB_HOST: mongo
-      CORS: http://3.70.198.200:3000
+      CORS: http:/3.71.93.212:3000
     ports:
       - "8080:8080"
 
@@ -98,7 +98,7 @@ services:
       - ase-delivery-discovery-server-service
     environment:
       # CORS: http://ec2-3-70-186-30.eu-central-1.compute.amazonaws.com:3000
-      CORS: http://3.70.198.200:3000
+      CORS: http://3.71.93.212:3000
     ports:
       - "10789:10789"
 
