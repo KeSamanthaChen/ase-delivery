@@ -102,7 +102,7 @@ public class BoxController {
                 int stillInDepositCount = 0;
                 boxService.updateBox(box);
                 for (Delivery delivery : deliveries) {
-                    if (delivery.getStatuses().size() == 0) {
+                    if (delivery.getStatuses().size() == 1) {
                         stillInDepositCount += 1;
                     }
                     if (delivery.getStatuses().size() == 3) {
