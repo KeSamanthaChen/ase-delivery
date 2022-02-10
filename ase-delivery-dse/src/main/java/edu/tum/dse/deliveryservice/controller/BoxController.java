@@ -118,6 +118,7 @@ public class BoxController {
                 } else {
                     box.setState(Box.BoxStateEnum.ASSIGNED);
                 }
+                boxService.updateBox(box);
             }
             return new ResponseEntity<>("box & deliveries updated", HttpStatus.OK);
         }
