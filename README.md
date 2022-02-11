@@ -24,6 +24,7 @@ docker run --rm -it -v /srv/gitlab-runner/config:/etc/gitlab-runner gitlab/gitla
 ```
 We use the the gitlab-runner as a docker container way to use the gitlab-runner, and use the docker socket binding way to run docker command in the docker containner.  
 The info about url and registration-token could be found in the setting->ci/cd->runner, and recommend to reset the token very time before you copy the token to register a new runner.  
+And make sure the "run untagged jobs" is checked in your new gitlab runner.  
 
 
 <br>
