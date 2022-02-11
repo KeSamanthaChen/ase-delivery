@@ -32,9 +32,9 @@ Current webiste address:  http://3.71.93.212:3000/ (Latest check in 11/02/2022 a
 How to log in to our website:  
 |  TestAccounts   | Username | Password  |
 |  ----  | ----  |----  |
-| Customer  | CUSTOMER |CUSTOMER |
-| Deliverer | DELIVERER |DELIVERER |
-| Dispatcher | DISPATHCER | DISPATCHER |
+| Customer  | Customer |Customer |
+| Deliverer | Deliverer |Deliverer |
+| Dispatcher | Dispatcher | Dispatcher |
 
 <br>
 
