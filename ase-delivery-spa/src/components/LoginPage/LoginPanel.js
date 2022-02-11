@@ -41,7 +41,7 @@ class LoginPanel extends React.Component {
                 <LoginButton username={this.state.username}
                             password={this.state.password}
                             />
-                {/* This is added during demo run.  */}
+                This is added during demo run. 
             </div>
         )
     }
